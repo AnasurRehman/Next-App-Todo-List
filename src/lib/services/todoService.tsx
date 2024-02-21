@@ -1,14 +1,19 @@
-import api from "@/lib/store/api";
+import api from "../store/api";
+import { useAppSelector } from "../store/hooks";
 
 export const TodoService = api.injectEndpoints({
   endpoints: (build) => ({
     getAllTodos: build.query<any, any>({
-      query: () => ({
-        url: "todos",
+      query: ({ userId, userToken }) => ({
+        url: `users/${userId}/todos`,
         method: "GET",
+        headers: {
+          'Authorization': `Bearer ${userToken}`,
+        },
       }),
       providesTags: ["TODOS"],
     }),
+    
     createTodo: build.mutation<any, any>({
       query: (body) => ({
         url: "todos/add",
@@ -19,7 +24,7 @@ export const TodoService = api.injectEndpoints({
       invalidatesTags: ["TODOS"],
     }),
     updateTodo: build.mutation<any, any>({
-      query: ({ todoId, body }) => ({
+      query: ({  body,todoId }) => ({
         url: `todos/${todoId}`,
         method: "PUT",
         headers: { "Content-Type": "application/json" },

@@ -22,7 +22,8 @@ export default function RootLayout({
         <body className={inter.className}>
           <Stack
             sx={{
-              width: "50%",
+              width: "60%",
+              py: 4,
               alignItems: "center",
               justifyContent: "center",
               background: "blue",

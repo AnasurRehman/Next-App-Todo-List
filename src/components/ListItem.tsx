@@ -1,5 +1,6 @@
 "use client";
 
+import { useUpdateTodoMutation } from "../lib/services/todoService";
 import { DeleteOutline, Edit } from "@mui/icons-material";
 import {
   Button,
@@ -35,6 +36,7 @@ const ListItem: React.FC<ListItemProps> = ({ title, status = false, id }) => {
         return "default";
     }
   };
+  const [editTodo] = useUpdateTodoMutation();
   return (
     <>
       {!edit ? (
@@ -44,6 +46,7 @@ const ListItem: React.FC<ListItemProps> = ({ title, status = false, id }) => {
             boxShadow:
               "rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px",
             p: 1,
+            mb: 1,
             width: "100%",
             borderRadius: "0.3rem",
             justifyContent: "space-between",
@@ -55,7 +58,6 @@ const ListItem: React.FC<ListItemProps> = ({ title, status = false, id }) => {
             <Chip
               color={getColor()}
               label={status ? "Complete" : "In-Complete"}
-              // variant="outlined"
             />
           </Stack>
           <Stack direction={"row"} spacing={2}>
@@ -87,7 +89,10 @@ const ListItem: React.FC<ListItemProps> = ({ title, status = false, id }) => {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              // console.log(data);
+              editTodo({
+                body: { todo: editData.todo, completed: editData.completed },
+                todoId: editData.id,
+              });
             }}
           >
             <Stack
