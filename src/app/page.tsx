@@ -1,8 +1,6 @@
 "use client";
-import toast from "react-hot-toast";
+import { SignInProps } from "@/_helpers/types";
 import { useSigninMutation } from "../lib/services/authService";
-import { getToken, setToken, setUserId } from "../lib/store/AuthSlice";
-import { useAppDispatch, useAppSelector } from "../lib/store/hooks";
 import {
   Button,
   CircularProgress,
@@ -15,7 +13,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Home() {
-  const [user, setData] = useState<{ username: string; password: string }>({
+  const [user, setData] = useState<SignInProps>({
     username: "",
     password: "",
   });
@@ -24,13 +22,9 @@ export default function Home() {
   const router = useRouter();
 
   const handleSignIn = () => {
-    try {
-      signIn({ username: user.username, password: user.password }).then(() =>
-        router.push("/todos")
-      );
-    } catch (error: any) {
-      toast.error("sdasd", { duration: 3000, position: "bottom-right" });
-    }
+    signIn({ username: user.username, password: user.password }).then(() =>
+      router.push("/todos")
+    );
   };
 
   return (

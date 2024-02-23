@@ -6,7 +6,7 @@ const api = createApi({
   reducerPath: MAIN_API_REDUCER_KEY,
   baseQuery: fetchBaseQuery({ baseUrl: "https://dummyjson.com/" }),
   endpoints: () => ({}),
-  tagTypes: ["TODOS", 'USERS'],
+  tagTypes: ["TODOS", "USERS"],
 });
 
 export default api;

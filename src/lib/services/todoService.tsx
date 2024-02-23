@@ -1,20 +1,17 @@
+import { DeleteTodoProps, GetTodosProps, TodosProps } from "@/_helpers/types";
 import api from "../store/api";
-import { useAppSelector } from "../store/hooks";
 
 export const TodoService = api.injectEndpoints({
   endpoints: (build) => ({
-    getAllTodos: build.query<any, any>({
-      query: ({ userId, userToken }) => ({
+    getAllTodos: build.query<GetTodosProps, { userId: string }>({
+      query: ({ userId }) => ({
         url: `users/${userId}/todos`,
         method: "GET",
-        headers: {
-          'Authorization': `Bearer ${userToken}`,
-        },
       }),
       providesTags: ["TODOS"],
     }),
-    
-    createTodo: build.mutation<any, any>({
+
+    createTodo: build.mutation<TodosProps, Omit<TodosProps, "id">>({
       query: (body) => ({
         url: "todos/add",
         method: "POST",
@@ -23,18 +20,18 @@ export const TodoService = api.injectEndpoints({
       }),
       invalidatesTags: ["TODOS"],
     }),
-    updateTodo: build.mutation<any, any>({
-      query: ({  body,todoId }) => ({
-        url: `todos/${todoId}`,
+    updateTodo: build.mutation<TodosProps, Omit<TodosProps, "userId">>({
+      query: (body) => ({
+        url: `todos/${body.id}`,
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body,
       }),
       invalidatesTags: ["TODOS"],
     }),
-    deleteTodo: build.mutation<any, any>({
-      query: (todoId) => ({
-        url: `todos/${todoId}`,
+    deleteTodo: build.mutation<DeleteTodoProps, number>({
+      query: (id) => ({
+        url: `todos/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["TODOS"],
