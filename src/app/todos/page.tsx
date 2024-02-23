@@ -5,7 +5,7 @@ import CreateTodos from "./CreateTodos";
 
 const Listpage = () => {
   return (
-    <Stack width={"100%"} maxHeight="50vh">
+    <Stack width={"100%"} >
       <CreateTodos />
       <Todos />
     </Stack>

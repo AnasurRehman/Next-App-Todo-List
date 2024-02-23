@@ -1,10 +1,11 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useCreateTodoMutation } from "../../lib/services/todoService";
-import { getUserId, setToken, setUserId } from "../../lib/store/AuthSlice";
+import { getUserId, setUserId } from "../../lib/store/AuthSlice";
 import { useAppDispatch, useAppSelector } from "../../lib/store/hooks";
 import {
   Button,
+  CircularProgress,
   FormLabel,
   MenuItem,
   Select,
@@ -16,23 +17,26 @@ import React, { useState } from "react";
 const CreateTodos = () => {
   // useAuthRedirect()
   const userId = useAppSelector(getUserId);
-  const router = useRouter();
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const [todo, setData] = useState<{ todo: string; completed: boolean }>({
     todo: "",
     completed: false,
   });
-  const [createTodo] = useCreateTodoMutation();
+  const [createTodo, { isLoading }] = useCreateTodoMutation();
+  const handleCreate = () => {
+    createTodo({
+      todo: todo.todo,
+      completed: todo.completed,
+      userId: userId ?? "",
+    });
+  };
 
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        createTodo({
-          todo: todo.todo,
-          completed: todo.completed,
-          userId: userId,
-        });
+        handleCreate();
       }}
     >
       <Stack
@@ -59,7 +63,7 @@ const CreateTodos = () => {
             <FormLabel>Todo Title</FormLabel>
             <TextField
               variant="outlined"
-              label="Todo"
+              placeholder="Enter your Todo Title"
               size="small"
               value={todo.todo}
               onChange={(e) =>
@@ -85,12 +89,11 @@ const CreateTodos = () => {
             </Select>
           </Stack>
           <Button
+            variant={isLoading ? "outlined" : "contained"}
             type="submit"
-            disabled={!todo.todo}
-            variant="contained"
-            sx={{ height: "2.5rem" }}
+            disabled={!todo.todo || isLoading}
           >
-            Add
+            {isLoading ? <CircularProgress size={"20px"} /> : "Add"}
           </Button>
         </Stack>
         <Button
@@ -98,7 +101,6 @@ const CreateTodos = () => {
             document.cookie =
               "userToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
             dispatch(setUserId(null));
-            dispatch(setToken(null));
             router.replace("/");
           }}
         >

@@ -1,10 +1,15 @@
 "use client";
 
-import { useUpdateTodoMutation } from "../lib/services/todoService";
+import { ListItemProps } from "@/_helpers/types";
+import {
+  useDeleteTodoMutation,
+  useUpdateTodoMutation,
+} from "../lib/services/todoService";
 import { DeleteOutline, Edit } from "@mui/icons-material";
 import {
   Button,
   Chip,
+  CircularProgress,
   MenuItem,
   Select,
   Stack,
@@ -13,13 +18,7 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 
-export interface ListItemProps {
-  title: string;
-  id: number;
-  status: true | false;
-}
-
-const ListItem: React.FC<ListItemProps> = ({ title, status = false, id }) => {
+const ListItem: React.FC<ListItemProps> = ({ title, id, status }) => {
   const [edit, setEdit] = useState<boolean>(false);
   const [editData, setEditData] = useState<{
     todo: string;
@@ -36,7 +35,19 @@ const ListItem: React.FC<ListItemProps> = ({ title, status = false, id }) => {
         return "default";
     }
   };
-  const [editTodo] = useUpdateTodoMutation();
+  const [editTodo, { isLoading: isEditLoading }] = useUpdateTodoMutation();
+  const [onDelete, { isLoading: isDeleteLoading }] = useDeleteTodoMutation();
+
+  const handleEdit = () => {
+    const body = {
+      todo: editData.todo,
+      completed: editData.completed,
+      id: editData.id,
+    };
+    editTodo(body).then(() => {
+      setEdit(!edit);
+    });
+  };
   return (
     <>
       {!edit ? (
@@ -66,11 +77,17 @@ const ListItem: React.FC<ListItemProps> = ({ title, status = false, id }) => {
                 setEditData({ todo: title, completed: status, id: id });
                 setEdit(true);
               }}
+              sx={{ cursor: "pointer" }}
             />
-            <DeleteOutline
-              onClick={() => console.log("sad")}
-              sx={{ color: "red" }}
-            />
+
+            {isDeleteLoading ? (
+              <CircularProgress size={"20px"} />
+            ) : (
+              <DeleteOutline
+                onClick={() => onDelete(id)}
+                sx={{ color: "red", cursor: "pointer" }}
+              />
+            )}
           </Stack>
         </Stack>
       ) : (
@@ -89,10 +106,7 @@ const ListItem: React.FC<ListItemProps> = ({ title, status = false, id }) => {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              editTodo({
-                body: { todo: editData.todo, completed: editData.completed },
-                todoId: editData.id,
-              });
+              handleEdit();
             }}
           >
             <Stack
@@ -101,8 +115,6 @@ const ListItem: React.FC<ListItemProps> = ({ title, status = false, id }) => {
               sx={{
                 background: "white",
                 alignItems: "flex-end",
-                // mx: 2,
-                // p: 2,
                 borderRadius: "1rem",
               }}
             >
@@ -135,10 +147,10 @@ const ListItem: React.FC<ListItemProps> = ({ title, status = false, id }) => {
               </Stack>
               <Button
                 type="submit"
-                disabled={!editData.todo}
-                variant="contained"
+                disabled={!editData.todo || isEditLoading}
+                variant={isEditLoading ? "outlined" : "contained"}
               >
-                Done
+                {isEditLoading ? <CircularProgress size={"20px"} /> : "Done"}
               </Button>
             </Stack>
           </form>

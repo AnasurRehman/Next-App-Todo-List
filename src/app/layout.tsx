@@ -17,16 +17,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <StoreProvider>
-      <html lang="en">
-        <body className={inter.className}>
+    <html lang="en">
+      <body className={inter.className}>
+        <StoreProvider>
           <Stack
             sx={{
               width: "60%",
               py: 4,
               alignItems: "center",
               justifyContent: "center",
-              background: "blue",
+              background: "#1976d2",
               borderRadius: "1rem",
               boxShadow:
                 "rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px",
@@ -38,8 +38,8 @@ export default function RootLayout({
 
             {children}
           </Stack>
-        </body>
-      </html>
-    </StoreProvider>
+        </StoreProvider>
+      </body>
+    </html>
   );
 }
