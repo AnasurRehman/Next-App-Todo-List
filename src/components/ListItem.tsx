@@ -44,7 +44,10 @@ const ListItem: React.FC<ListItemProps> = ({ title, id, status }) => {
       completed: editData.completed,
       id: editData.id,
     };
-    editTodo(body).then(() => {
+    editTodo(body).then((res: any) => {
+      if (res.data) {
+        alert("Todo updated successfully");
+      }
       setEdit(!edit);
     });
   };
@@ -84,7 +87,9 @@ const ListItem: React.FC<ListItemProps> = ({ title, id, status }) => {
               <CircularProgress size={"20px"} />
             ) : (
               <DeleteOutline
-                onClick={() => onDelete(id)}
+                onClick={() => {
+                  onDelete(id).then(() => alert("Todo Deleted"));
+                }}
                 sx={{ color: "red", cursor: "pointer" }}
               />
             )}
@@ -132,7 +137,6 @@ const ListItem: React.FC<ListItemProps> = ({ title, id, status }) => {
               <Stack>
                 <Select
                   value={editData.completed}
-                  label="Completed"
                   size="small"
                   onChange={(e) =>
                     setEditData((prev) => ({

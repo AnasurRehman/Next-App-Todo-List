@@ -29,6 +29,8 @@ const CreateTodos = () => {
       todo: todo.todo,
       completed: todo.completed,
       userId: userId ?? "",
+    }).then((res: any) => {
+      if (res.data) alert("Todo Created Successfully");
     });
   };
 

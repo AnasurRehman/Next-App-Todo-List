@@ -22,8 +22,13 @@ export default function Home() {
   const router = useRouter();
 
   const handleSignIn = () => {
-    signIn({ username: user.username, password: user.password }).then(() =>
-      router.push("/todos")
+    signIn({ username: user.username, password: user.password }).then(
+      (res: any) => {
+        if (res.data.message) {
+          alert(res.data.message);
+        }
+        router.push("/todos");
+      }
     );
   };
 

@@ -21,11 +21,11 @@ export const TodoService = api.injectEndpoints({
       invalidatesTags: ["TODOS"],
     }),
     updateTodo: build.mutation<TodosProps, Omit<TodosProps, "userId">>({
-      query: (body) => ({
-        url: `todos/${body.id}`,
+      query: (data) => ({
+        url: `todos/${data.id}`,
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body,
+        body: { completed: data.completed },
       }),
       invalidatesTags: ["TODOS"],
     }),
